@@ -115,18 +115,15 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 import dj_database_url
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-if DATABASE_URL:
-    # Exemple attendu: postgresql://postgres:XXXX@db.xxx.supabase.co:6543/postgres
-    DATABASES = {
-        "default": dj_database_url.parse(
-            DATABASE_URL,
-            conn_max_age=0,          # laisser PgBouncer gérer le pooling
-            ssl_require=True
-        )
-    }
-else:
+# Base de données via DATABASE_URL (Supabase)
+DATABASES = {
+    "default": dj_database_url.config(
+        default=os.getenv("DATABASE_URL"),
+        conn_max_age=0,   # Pooling (PgBouncer) => laisser le pool gérer
+        ssl_require=True
+    )
+}
+if not os.getenv("DATABASE_URL"):
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
