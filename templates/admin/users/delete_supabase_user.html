@@ -1,0 +1,12 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>{{ title }}</h1>
+<p>Êtes-vous sûr de vouloir supprimer l'utilisateur <strong>{{ user.email }}</strong> (ID: {{ user.id }}) ?</p>
+<form method="post">
+    {% csrf_token %}
+    <div class="submit-row">
+        <input type="submit" value="Oui, supprimer" class="deletelink" />
+        <a href="{% url 'admin:auth_user_changelist' %}" class="button cancel-link">Annuler</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block content %}
+  <div class="app-offres module">
+    <h1>Offres (Supabase)</h1>
+
+    {% if messages %}
+      <ul class="messagelist">
+        {% for message in messages %}
+          <li class="{{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <p>
+      <a class="button" href="{{ add_offre_url }}">Ajouter une offre</a>
+    </p>
+
+    <p>Nombre d'offres: {{ offres_count|default:0 }}</p>
+
+    {% if offres and offres|length > 0 %}
+      <div class="results">
+        <table id="result_list" class="listing">
+          <thead>
+            <tr>
+              <th scope="col">Titre</th>
+              <th scope="col">Prix</th>
+              <th scope="col">Actif</th>
+              <th scope="col">Stock</th>
+              <th scope="col">Catégorie</th>
+              <th scope="col">Créée le</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for o in offres %}
+              <tr class="{% cycle 'row1' 'row2' %}">
+                <th class="field-title">{{ o.title }}</th>
+                <td class="field-price">{{ o.price }}</td>
+                <td class="field-active">{{ o.active|yesno:"Oui,Non" }}</td>
+                <td class="field-stock">{{ o.stock }}</td>
+                <td class="field-category">{{ o.category }}</td>
+                <td class="field-created_at">{{ o.created_at }}</td>
+                <td class="field-actions">
+                  <a href="{% url 'admin:edit_offre' o.id %}">Modifier</a> |
+                  <a href="{% url 'admin:delete_offre' o.id %}">Supprimer</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p>Aucune offre trouvée ou connexion Supabase indisponible.</p>
+    {% endif %}
+  </div>
+{% endblock %}

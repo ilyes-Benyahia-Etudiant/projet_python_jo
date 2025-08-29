@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Espace utilisateur{% endblock %}
+{% block content %}
+<h1>Espace utilisateur</h1>
+
+<div id="userInfo">
+  <p>Chargement des informations...</p>
+</div>
+
+<button id="logoutBtn" type="button">Se déconnecter</button>
+
+<div class="toast" aria-live="polite"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/user/dashboard.js' %}"></script>
+{% endblock %}

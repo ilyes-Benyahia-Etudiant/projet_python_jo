@@ -1,0 +1,63 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls static %}
+
+{% block object-tools-items %}
+    <li>
+        <a href="{{ add_supabase_url }}" class="addlink">
+            Ajouter un utilisateur Supabase
+        </a>
+    </li>
+    <li>
+        <a href="{{ extract_supabase_url }}" class="viewlink">
+            Voir l'extraction complète
+        </a>
+    </li>
+{% endblock %}
+
+{% block result_list %}
+<div class="results">
+    <div class="actions" style="margin-bottom: 10px;">
+        <strong>{{ users_count }} utilisateur{{ users_count|pluralize }} trouvé{{ users_count|pluralize }} (source: Supabase)</strong>
+    </div>
+
+    <table id="result_list">
+        <thead>
+            <tr>
+                <th scope="col">Actions</th>
+                <th scope="col">UUID</th>
+                <th scope="col">Email</th>
+                <th scope="col">Nom complet</th>
+                <th scope="col">Rôle</th>
+                <th scope="col">Provider</th>
+                <th scope="col">Email confirmé</th>
+                <th scope="col">Créé le</th>
+                <th scope="col">Dernière connexion</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in supabase_users %}
+            <tr class="{% cycle 'row1' 'row2' %}">
+                <td>
+                    <a href="{% url 'admin:edit_supabase_user' user.id %}" class="changelink" title="Modifier">✏️</a>
+                    <a href="{% url 'admin:delete_supabase_user' user.id %}" class="deletelink" title="Supprimer">🗑️</a>
+                </td>
+                <td>{{ user.id }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.full_name|default:"" }}</td>
+                <td>{{ user.role|default:"user" }}</td>
+                <td>{{ user.provider|default:"email" }}</td>
+                <td>
+                    {% if user.email_confirmed %}
+                        <img src="{% static "admin/img/icon-yes.svg" %}" alt="True">
+                    {% else %}
+                        <img src="{% static "admin/img/icon-no.svg" %}" alt="False">
+                    {% endif %}
+                </td>
+                <td>{{ user.created_at|date:"d/m/Y H:i" }}</td>
+                <td>{{ user.last_sign_in|date:"d/m/Y H:i"|default:"" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

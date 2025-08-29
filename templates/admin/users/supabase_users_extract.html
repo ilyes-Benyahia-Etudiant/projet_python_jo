@@ -1,0 +1,82 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_urls static admin_list %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+&rsaquo; <a href="{% url 'admin:auth_user_changelist' %}">Utilisateurs</a>
+&rsaquo; {{ title }}
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="module">
+    <h1>{{ title }}</h1>
+    
+    <div class="results">
+        <div class="actions">
+            <label>{{ users_count }} utilisateur{{ users_count|pluralize }} trouvé{{ users_count|pluralize }} dans Supabase</label>
+        </div>
+        
+        {% if supabase_users %}
+        <table id="result_list">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Nom complet</th>
+                    <th scope="col">Rôle</th>
+                    <th scope="col">Provider</th>
+                    <th scope="col">Email confirmé</th>
+                    <th scope="col">Créé le</th>
+                    <th scope="col">Dernière connexion</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in supabase_users %}
+                <tr class="{% cycle 'row1' 'row2' %}">
+                    <td>{{ user.id|truncatechars:8 }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.full_name|default:"N/A" }}</td>
+                    <td>
+                        <span class="badge {% if user.role == 'admin' %}badge-success{% else %}badge-secondary{% endif %}">
+                            {{ user.role|default:"user" }}
+                        </span>
+                    </td>
+                    <td>{{ user.provider|default:"email" }}</td>
+                    <td>
+                        {% if user.email_confirmed %}
+                            <img src="{% static "admin/img/icon-yes.svg" %}" alt="True">
+                        {% else %}
+                            <img src="{% static "admin/img/icon-no.svg" %}" alt="False">
+                        {% endif %}
+                    </td>
+                    <td>{{ user.created_at|date:"d/m/Y H:i" }}</td>
+                    <td>{{ user.last_sign_in|date:"d/m/Y H:i"|default:"Jamais" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="paginator">Aucun utilisateur trouvé dans Supabase.</p>
+        {% endif %}
+        
+        <div class="actions">
+            <a href="{% url 'admin:auth_user_changelist' %}" class="button">← Retour à la liste des utilisateurs</a>
+        </div>
+    </div>
+</div>
+
+<style>
+.badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+}
+.badge-success { background-color: #28a745; color: white; }
+.badge-secondary { background-color: #6c757d; color: white; }
+</style>
+{% endblock %}

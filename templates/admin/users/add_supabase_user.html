@@ -1,0 +1,32 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+{% block content %}
+<h1>{{ title }}</h1>
+<form method="post" novalidate>
+    {% csrf_token %}
+    <div class="form-row">
+        <label>Email</label>
+        <input type="email" name="email" required />
+    </div>
+    <div class="form-row">
+        <label>Nom complet</label>
+        <input type="text" name="full_name" />
+    </div>
+    <div class="form-row">
+        <label>Rôle</label>
+        <input type="text" name="role" value="user" />
+    </div>
+    <div class="form-row">
+        <label>Provider</label>
+        <input type="text" name="provider" value="email" />
+    </div>
+    <div class="form-row">
+        <label>Email confirmé</label>
+        <input type="checkbox" name="email_confirmed" />
+    </div>
+    <div class="submit-row">
+        <input type="submit" value="Créer" class="default" />
+        <a href="{% url 'admin:auth_user_changelist' %}" class="button cancel-link">Annuler</a>
+    </div>
+</form>
+{% endblock %}

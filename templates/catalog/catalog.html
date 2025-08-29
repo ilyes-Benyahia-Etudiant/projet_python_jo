@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Catalogue - Mon E-commerce{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Catalogue de Produits</h2>
+            
+            <!-- Filtres et recherche -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <select id="category-filter" class="form-select">
+                        <option value="">Toutes les catégories</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" id="search-input" class="form-control" placeholder="Rechercher un produit...">
+                </div>
+            </div>
+            
+            <!-- Chargement -->
+            <div id="loading" class="text-center">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+            </div>
+            
+            <!-- Liste des produits -->
+            <div id="products-container" class="row">
+                <!-- Les produits seront chargés ici par JavaScript -->
+            </div>
+            
+            <!-- Message si aucun produit -->
+            <div id="no-products" class="alert alert-info d-none">
+                Aucun produit trouvé.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/catalog/catalog.js' %}"></script>
+{% endblock %}

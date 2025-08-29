@@ -1,0 +1,43 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block content %}
+  <h1>{{ title }}</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    <div>
+      <label>Titre</label>
+      <input type="text" name="title" required />
+    </div>
+    <div>
+      <label>Prix</label>
+      <input type="number" name="price" step="0.01" min="0" value="0" required />
+    </div>
+    <div>
+      <label>Description</label>
+      <textarea name="description"></textarea>
+    </div>
+    <div>
+      <label>Image (URL)</label>
+      <input type="text" name="image" />
+    </div>
+    <div>
+      <label>Catégorie</label>
+      <input type="text" name="category" />
+    </div>
+    <div>
+      <label>Stock</label>
+      <input type="number" name="stock" min="0" value="0" />
+    </div>
+    <div>
+      <label>Actif</label>
+      <input type="checkbox" name="active" checked />
+    </div>
+
+    <div style="margin-top: 12px;">
+      <button type="submit" class="button default">Créer</button>
+      <a class="button" href="{% url 'admin:users_offre_changelist' %}">Annuler</a>
+    </div>
+  </form>
+{% endblock %}
