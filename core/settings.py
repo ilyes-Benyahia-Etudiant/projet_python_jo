@@ -40,7 +40,20 @@ SECRET_KEY = 'django-insecure-est_#$^a=lq*ix)dhrzi9o8q44#8kg9mlwel#2f_4ckpv#_k3%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# Sécurité / hôtes autorisés
+import os
+ALLOWED_HOSTS = [h.strip() for h in os.getenv(
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1,projet-python-jo.onrender.com"
+).split(",") if h.strip()]
+
+CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    "https://projet-python-jo.onrender.com"
+).split(",") if o.strip()]
+
+# Permet à Django de reconnaître le HTTPS passé par le proxy Render
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
 # Application definition
