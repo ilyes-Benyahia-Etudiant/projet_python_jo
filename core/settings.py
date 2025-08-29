@@ -110,22 +110,38 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+# Priorité: DATABASE_URL (Pooling Supabase), sinon fallback variables SUPABASE_DB_*
+# Nécessite le package dj-database-url dans requirements.txt
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.getenv("SUPABASE_DB_HOST"),
-        "PORT": os.getenv("SUPABASE_DB_PORT", "5432"),
-        "NAME": os.getenv("SUPABASE_DB_NAME"),
-        "USER": os.getenv("SUPABASE_DB_USER"),
-        "PASSWORD": os.getenv("SUPABASE_DB_PASSWORD"),
-        "OPTIONS": {
-            "sslmode": "require",
-            "connect_timeout": 5,
+import dj_database_url
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL:
+    # Exemple attendu: postgresql://postgres:XXXX@db.xxx.supabase.co:6543/postgres
+    DATABASES = {
+        "default": dj_database_url.parse(
+            DATABASE_URL,
+            conn_max_age=0,          # laisser PgBouncer gérer le pooling
+            ssl_require=True
+        )
+    }
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "HOST": os.getenv("SUPABASE_DB_HOST"),
+            "PORT": os.getenv("SUPABASE_DB_PORT", "5432"),  # Direct = 5432
+            "NAME": os.getenv("SUPABASE_DB_NAME", "postgres"),
+            "USER": os.getenv("SUPABASE_DB_USER", "postgres"),
+            "PASSWORD": os.getenv("SUPABASE_DB_PASSWORD"),
+            "OPTIONS": {
+                "sslmode": "require",
+                "connect_timeout": 10,  # délai plus large
+            },
+            "CONN_MAX_AGE": 0,
         },
-        "CONN_MAX_AGE": 0,  # évite les connexions persistantes sur Supabase
-    },
-}
+    }
 
 DATABASE_ROUTERS = []  # un seul DB => plus de router
 DATABASE_ROUTERS = [
