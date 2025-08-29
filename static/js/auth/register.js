@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('register-form');
 
+    // Optionnel: s'assurer que le cookie CSRF est bien présent (la vue /register/ a déjà ensure_csrf_cookie)
+    fetch('/api/auth/csrf/', { credentials: 'same-origin' }).catch(() => {});
+
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -19,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')
                 },
+                credentials: 'same-origin', // <-- important: envoi des cookies (CSRF/session)
                 body: JSON.stringify(data)
             });
 

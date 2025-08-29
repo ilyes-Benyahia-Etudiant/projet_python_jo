@@ -52,8 +52,13 @@ CSRF_TRUSTED_ORIGINS = [o.strip() for o in os.getenv(
     "https://projet-python-jo.onrender.com"
 ).split(",") if o.strip()]
 
-# Permet à Django de reconnaître le HTTPS passé par le proxy Render
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Cookies sécurisés en production
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 
 # Application definition
