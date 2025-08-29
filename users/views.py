@@ -12,6 +12,7 @@ from .serializers import (
     UserOutputSerializer,
 )
 from django.contrib.auth.models import User
+from catalog.supabase_service import supabase_service  # <-- ajout import du service Supabase
 
 # Create your views here.
 
@@ -40,6 +41,21 @@ def register(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     user = serializer.save()
+
+    # Tentative: miroir dans Supabase (optionnel)
+    try:
+        supabase_payload = {
+            "email": user.email,
+            "full_name": user.username,  # adapte si tu as un champ 'full_name' dans ta table Supabase
+            "role": "user",
+            "provider": "email",
+            "email_confirmed": False,
+        }
+        supabase_service.create_supabase_user(supabase_payload)
+    except Exception:
+        # On n'échoue pas l'inscription Django si Supabase échoue
+        pass
+
     return Response(
         {
             "detail": "Inscription réussie.",
@@ -56,7 +72,7 @@ def login(request):
     Connexion par session via email + mot de passe.
     - On recherche l'utilisateur par son email (insensible à la casse).
     - On authentifie via authenticate() en passant son username interne + mot de passe.
-    - CONTRÔLE DU RÔLE ET REDIRECTION:
+    - CONTRÖLE DU RÖLE ET REDIRECTION:
         * user.is_staff == True => admin => redirect_url = '/admin/'
         * sinon => utilisateur => redirect_url = '/'
       Le front lit redirect_url et effectue la redirection.

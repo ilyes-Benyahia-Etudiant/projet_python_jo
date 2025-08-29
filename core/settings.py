@@ -113,10 +113,6 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    },
-    "supabase": {
         "ENGINE": "django.db.backends.postgresql",
         "HOST": os.getenv("SUPABASE_DB_HOST"),
         "PORT": os.getenv("SUPABASE_DB_PORT", "5432"),
@@ -125,12 +121,13 @@ DATABASES = {
         "PASSWORD": os.getenv("SUPABASE_DB_PASSWORD"),
         "OPTIONS": {
             "sslmode": "require",
-            "connect_timeout": 5,  # <- échec rapide si la connexion échoue
+            "connect_timeout": 5,
         },
-        "CONN_MAX_AGE": 0,  # connexion non persistante (évite des blocages persistants)
+        "CONN_MAX_AGE": 0,  # évite les connexions persistantes sur Supabase
     },
 }
 
+DATABASE_ROUTERS = []  # un seul DB => plus de router
 DATABASE_ROUTERS = [
     "core.dbrouters.OffresRouter",
 ]

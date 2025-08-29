@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('register-form');
 
-    // Optionnel: s'assurer que le cookie CSRF est bien présent (la vue /register/ a déjà ensure_csrf_cookie)
+    // Optionnel: s'assurer que le cookie CSRF est bien présent
     fetch('/api/auth/csrf/', { credentials: 'same-origin' }).catch(() => {});
 
     form.addEventListener('submit', async function(e) {
@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'Content-Type': 'application/json',
                     'X-CSRFToken': getCookie('csrftoken')
                 },
-                credentials: 'same-origin', // <-- important: envoi des cookies (CSRF/session)
+                credentials: 'same-origin', // <-- important: inclut les cookies
                 body: JSON.stringify(data)
             });
 
@@ -32,9 +32,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 showToast('Inscription réussie ! Vous pouvez maintenant vous connecter.', 'success');
                 setTimeout(() => {
                     window.location.href = '/login/';
-                }, 2000);
+                }, 1500);
             } else {
-                // Affichage des erreurs avec une meilleure structure
+                // Afficher proprement les erreurs
                 displayFormErrors(result);
             }
         } catch (error) {
